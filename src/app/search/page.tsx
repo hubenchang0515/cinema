@@ -4,7 +4,7 @@ import { Request } from '@/utils/Request';
 import { Fragment, useEffect, useState } from 'react';
 
 import 'tdesign-react/es/style/index.css';
-import { Space, Loading, Tabs, Row, Col, Pagination } from 'tdesign-react';
+import { Space, Loading, Row, Col, Pagination } from 'tdesign-react';
 import { CONFIG } from '@/config';
 import { useSearchParams } from 'next/navigation';
 import VideoLink from '@/components/VideoLink';
@@ -25,16 +25,8 @@ export interface VideoItem {
 
 export default function Home() {
     const params = useSearchParams();
-    const type = parseInt(params.get('type') as string);
+    const text = params.get('text')??'';
     const page = parseInt(params.get('page') as string);
-
-    // 修改类型
-    const changeType = (v:number) => {
-        const _params = new URLSearchParams(params.toString())
-        _params.set('type', `${v || 0}`);
-        _params.set('page', `1`);
-        window.history.pushState(null, '', `?${_params.toString()}`);
-    }
 
     // 修改页
     const changePage = (v:number) => {
@@ -42,40 +34,18 @@ export default function Home() {
         _params.set('page', `${v || 1}`);
         window.history.pushState(null, '', `?${_params.toString()}`);
     }
-    
-    const { TabPanel } = Tabs;
 
     const [loading, setLoading] = useState(false);
-    const [types, setTypes] = useState<TypeItem[]>([]);
     const [videos, setVideos] = useState<VideoItem[]>([]);
     const [pageSize, setPageSize] = useState(20);
     const [total, setTotal] = useState(0);
 
-    const fetchTypes = async (host:string) => {
-        const url = new URL(host);
-        url.searchParams.set('ac', 'list');
-        const data = await Request.GET(url.toString());
-        const types:TypeItem[] = [];
-        for (const type of data.class) {
-            if (CONFIG.TYPE_FILTER && CONFIG.TYPE_FILTER.includes(type.type_name)) {
-                continue;
-            }
-            types.push({
-                id: type.type_id,
-                name: type.type_name,
-            })
-        }
-        setTypes(types);
-    }
-
-    const fetchVideos = async (host:string, type:number=0, page:number=1) => {
+    const fetchVideos = async (host:string, text:string, page:number=1) => {
         setLoading(true);
         const url = new URL(host);
         url.searchParams.set('ac', 'detail');
+        url.searchParams.set('wd', text);
         url.searchParams.set('pg', `${page || 1}`);
-        if (type) {
-            url.searchParams.set('t', `${type}`);
-        }
         const data = await Request.GET(url.toString());
         setPageSize(data.limit);
         setTotal(data.total);
@@ -93,13 +63,9 @@ export default function Home() {
         setLoading(false);
     }
 
-    useEffect(() => {
-        fetchTypes(CONFIG.HOST);
-    }, []);
 
-    useEffect(() => {
-        fetchVideos(CONFIG.HOST, type as number, page);
-    }, [type, page]);
+    useEffect(() => {fetchVideos(CONFIG.HOST, text, page)}, [text, page]);
+
 
     return (
         <Fragment>
@@ -115,16 +81,6 @@ export default function Home() {
                 style={{width:'100%'}}
             >
                 <Navigation onSearch={(text) => {window.location.assign(`/search?text=${text}&page=1`);}}/>
-                
-                <Tabs value={type} onChange={(v) => changeType(v as number)}>
-                    {
-                        types.map((type, index) => {
-                            return (
-                                <TabPanel key={index} value={type.id} label={type.name}/>
-                            );
-                        })
-                    }
-                </Tabs>
 
                 <Row gutter={[16, 16]}>
                     {
