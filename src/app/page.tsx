@@ -131,7 +131,7 @@ function Home() {
                         videos.map((video, index) => {
                             return (
                                 <Col key={index} xl={{span: 2}} lg={{span: 3}} md={{span:4}} sm={{span:6}} xs={{span:12}}>
-                                    <VideoLink url={`/video/?id=${video.id}`} title={video.name} remarks={video.remarks} image={video.image} />
+                                    <VideoLink url={`/video?id=${video.id}`} title={video.name} remarks={video.remarks} image={video.image} />
                                 </Col>
                             );
                         })
