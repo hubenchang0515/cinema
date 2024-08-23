@@ -1,7 +1,7 @@
 'use client';
 
 import { Request } from '@/utils/Request';
-import { Fragment, useEffect, useState } from 'react';
+import { Suspense, Fragment, useEffect, useState } from 'react';
 
 import 'tdesign-react/es/style/index.css';
 import { Space, Loading, Tabs, Row, Col, Pagination } from 'tdesign-react';
@@ -23,7 +23,7 @@ export interface VideoItem {
     remarks: string;
 }
 
-export default function Home() {
+function Home() {
     const params = useSearchParams();
     const type = parseInt(params.get('type') as string);
     const page = parseInt(params.get('page') as string);
@@ -147,6 +147,13 @@ export default function Home() {
                 />
             </Space>
         </Fragment>
-        
     );
+}
+
+export default function HomePage() {
+    return (
+        <Suspense>
+            <Home></Home>
+        </Suspense>
+    )
 }

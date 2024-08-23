@@ -1,6 +1,6 @@
 'use client'
 import 'tdesign-react/es/style/index.css';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, Fragment, useEffect, useRef, useState } from 'react';
 import 'video.js/dist/video-js.css';
 import videojs from 'video.js';
 import Player from 'video.js/dist/types/player';
@@ -11,7 +11,7 @@ import EpisodeSelector, { type EpisodeOption } from '@/components/EpisodeSelecto
 import VideoBrief from '@/components/VideoBrief';
 import Navigation from '@/components/Navigation';
 
-export default function Video() {
+function Video() {
     // 获取参数
     const params = useSearchParams();
     const id = parseInt(params.get('id') as string);
@@ -65,7 +65,7 @@ export default function Video() {
     // 启动时请求数据
     useEffect(() => {
         fetchData(CONFIG.HOST, id);
-    }, []);
+    });
 
     // 当前集发生切换
     useEffect(() => {
@@ -93,29 +93,39 @@ export default function Video() {
     const briefWidth = '15vw';
 
     return (
-        <div style={{width:'100%', minHeight: '95vh', display:'flex', flexDirection: 'column', gap:16}}>
-            <Navigation onSearch={(text) => {window.location.assign(`/search?text=${text}&page=1`);}}/>
-            <div style={{width:'100%', display:'flex', flexGrow:1, gap:16}}>
-                <div style={{ width: `calc(100% - ${briefWidth} - 16px)`, display:'flex', flexDirection:'column', gap:16}}>
-                    <div style={{height:'calc(100vh - 300px)'}}>
-                        <video
-                            id='player'
-                            controls
-                            className='video-js'
-                            preload="auto"
-                            muted={false}
-                            style={{height: '100%', width: '100%'}}
-                        >
-                        </video>
+        <Fragment>
+            <div style={{width:'100%', minHeight: '95vh', display:'flex', flexDirection: 'column', gap:16}}>
+                <Navigation onSearch={(text) => {window.location.assign(`/search?text=${text}&page=1`);}}/>
+                <div style={{width:'100%', display:'flex', flexGrow:1, gap:16}}>
+                    <div style={{ width: `calc(100% - ${briefWidth} - 16px)`, display:'flex', flexDirection:'column', gap:16}}>
+                        <div style={{height:'calc(100vh - 300px)'}}>
+                            <video
+                                id='player'
+                                controls
+                                className='video-js'
+                                preload="auto"
+                                muted={false}
+                                style={{height: '100%', width: '100%'}}
+                            >
+                            </video>
+                        </div>
+                        <EpisodeSelector current={episode} options={episodes} onChanged={changeEpisode}></EpisodeSelector>
+                        <div style={{flexGrow:1}}></div>
                     </div>
-                    <EpisodeSelector current={episode} options={episodes} onChanged={changeEpisode}></EpisodeSelector>
-                    <div style={{flexGrow:1}}></div>
-                </div>
-                <div style={{height: '100%', width: `${briefWidth}`, flexShrink: 0}}>
-                    <VideoBrief title={title} actor={actor} brief={brief} image={image}/>
-                    <div style={{flexGrow:1}}></div>
+                    <div style={{height: '100%', width: `${briefWidth}`, flexShrink: 0}}>
+                        <VideoBrief title={title} actor={actor} brief={brief} image={image}/>
+                        <div style={{flexGrow:1}}></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Fragment>
+    )
+}
+
+export default function VideoPage() {
+    return (
+        <Suspense>
+            <Video></Video>
+        </Suspense>
     )
 }

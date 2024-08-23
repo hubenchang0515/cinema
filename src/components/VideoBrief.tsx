@@ -15,7 +15,7 @@ export default function VideoBrief(props:VideoBriefProps) {
             bordered={false}
             style={{width: '100%'}}
             title={props.title}
-            cover={<Image lazy src={props.image} style={{height:'50vh'}} fit='cover' key={props.image} loading={<Loading loading/>} fallback='/404.webp' />}
+            cover={<Image lazy src={props.image} style={{height:'50vh'}} fit='cover' key={props.image} loading={<Loading loading/>} fallback='/404.webp' alt='cover'/>}
             footer={
                 <Paragraph>
                     <Text strong>简介</Text>

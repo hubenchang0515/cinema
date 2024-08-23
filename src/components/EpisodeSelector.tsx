@@ -24,7 +24,7 @@ export default function Episodes(props:EpisodeSelectorProps) {
 
     useEffect(() => {
         setTab(Math.floor((props.current-1)/tabSize));
-    }, [props.current]);
+    }, [props]);
 
     return(
         <Card title='选集'>

@@ -15,7 +15,7 @@ export default function VideoLink(props:VideoLinkProps) {
                 bordered={false}
                 hoverShadow 
                 style={{ height:'100%', width: '100%' }}
-                cover={<Image lazy src={props.image} style={{height:'40vh'}} fit='cover' key={props.image} loading={<Loading loading/>} fallback='/404.webp' />}
+                cover={<Image lazy src={props.image} style={{height:'40vh'}} fit='cover' key={props.image} loading={<Loading loading/>} fallback='/404.webp' alt='cover'/>}
                 footer={<Comment author={props.title} content={props.remarks}/>}
             >
             </Card>
