@@ -24,6 +24,10 @@ function Video() {
         window.history.pushState(null, '', `?${_params.toString()}`);
     }
 
+    if (!episode) {
+        changeEpisode(episode||1);
+    }
+
     const [m3u8, setM3u8] = useState('');
     const player = useRef<Player>();
 
@@ -33,39 +37,39 @@ function Video() {
     const [brief, setBrief] = useState('');
     const [image, setImage] = useState('');
     const [episodes, setEpisodes] = useState<EpisodeOption[]>([]);
-    const fetchData = async (host:string, id:number) => {
-        const url = new URL(host);
-        url.searchParams.set('ac', 'detail');
-        url.searchParams.set('ids', `${id}`);
-
-        const data = await Request.GET(url.toString());
-        if (!data || !data.list || !data.list.length) {
-            return;
-        }
-
-        setTitle(data.list[0].vod_name);
-        setActor(data.list[0].vod_actor);
-        setBrief(data.list[0].vod_content.replace(/<.*?>/ig, ''));
-        setImage(data.list[0].vod_pic);
-        
-        const items = data.list[0].vod_play_url.split('#');
-        const episodes:EpisodeOption[] = [];
-        for (const index in items) {
-            const pair = items[index].split('$');
-            episodes.push({
-                name: pair[0],
-                url: pair[1],
-            })
-        }
-        // episodes.sort((a,b) => a.name.localeCompare(b.name));
-        setEpisodes(episodes);
-        changeEpisode(episode||1);
-    }
 
     // 启动时请求数据
     useEffect(() => {
-        fetchData(CONFIG.HOST, id);
-    });
+        const fetchData = async (host:string, id:number) => {
+            const url = new URL(host);
+            url.searchParams.set('ac', 'detail');
+            url.searchParams.set('ids', `${id}`);
+    
+            const data = await Request.GET(url.toString());
+            if (!data || !data.list || !data.list.length) {
+                return;
+            }
+    
+            setTitle(data.list[0].vod_name);
+            setActor(data.list[0].vod_actor);
+            setBrief(data.list[0].vod_content.replace(/<.*?>/ig, ''));
+            setImage(data.list[0].vod_pic);
+            
+            const items = data.list[0].vod_play_url.split('#');
+            const episodes:EpisodeOption[] = [];
+            for (const index in items) {
+                const pair = items[index].split('$');
+                episodes.push({
+                    name: pair[0],
+                    url: pair[1],
+                })
+            }
+            // episodes.sort((a,b) => a.name.localeCompare(b.name));
+            setEpisodes(episodes);
+        };
+
+        fetchData(CONFIG.HOST, id)
+    },[id]);
 
     // 当前集发生切换
     useEffect(() => {
