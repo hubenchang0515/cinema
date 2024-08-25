@@ -10,6 +10,7 @@ import { CONFIG } from '@/config';
 import EpisodeSelector, { type EpisodeOption } from '@/components/EpisodeSelector';
 import VideoBrief from '@/components/VideoBrief';
 import Navigation from '@/components/Navigation';
+import { Col, Row, Space } from 'tdesign-react';
 
 function Video() {
     // 获取参数
@@ -91,33 +92,33 @@ function Video() {
         }
     }, [m3u8]);
 
-    const briefWidth = '15vw';
-
     return (
         <Fragment>
             <div style={{width:'100%', minHeight: '95vh', display:'flex', flexDirection: 'column', gap:16}}>
                 <Navigation onSearch={(text) => {window.location.assign(`/search?api=${api}&text=${text}&page=1`);}}/>
-                <div style={{width:'100%', display:'flex', flexGrow:1, gap:16}}>
-                    <div style={{ width: `calc(100% - ${briefWidth} - 16px)`, display:'flex', flexDirection:'column', gap:16}}>
-                        <div style={{height:'calc(100vh - 300px)'}}>
-                            <video
-                                id='player'
-                                controls
-                                className='video-js'
-                                preload="auto"
-                                muted={false}
-                                style={{height: '100%', width: '100%'}}
-                            >
-                            </video>
+                <Row gutter={[16, 16]}>
+                    <Col xl={{span: 10}} lg={{span: 10}} md={{span:12}} sm={{span:12}} xs={{span:12}}>
+                        <Space direction='vertical' style={{width: '100%'}}>
+                            <div style={{height:'calc(100vh - 300px)', width: '100%'}}>
+                                <video
+                                    id='player'
+                                    controls
+                                    className='video-js'
+                                    preload="auto"
+                                    muted={false}
+                                    style={{height: '100%', width: '100%'}}
+                                >
+                                </video>
+                            </div>
+                            <EpisodeSelector current={episode} options={episodes} onChanged={changeEpisode}/>
+                        </Space>
+                    </Col>
+                    <Col xl={{span: 2}} lg={{span: 2}} md={{span:12}} sm={{span:12}} xs={{span:12}}>
+                        <div style={{height: '100%', width: '100%', flexShrink: 0}}>
+                            <VideoBrief title={title} actor={actor} brief={brief} image={image}/>
                         </div>
-                        <EpisodeSelector current={episode} options={episodes} onChanged={changeEpisode}></EpisodeSelector>
-                        <div style={{flexGrow:1}}></div>
-                    </div>
-                    <div style={{height: '100%', width: `${briefWidth}`, flexShrink: 0}}>
-                        <VideoBrief title={title} actor={actor} brief={brief} image={image}/>
-                        <div style={{flexGrow:1}}></div>
-                    </div>
-                </div>
+                    </Col>
+                </Row>
             </div>
         </Fragment>
     )

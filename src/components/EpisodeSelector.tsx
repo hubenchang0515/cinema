@@ -28,7 +28,7 @@ export default function Episodes(props:EpisodeSelectorProps) {
 
     return(
         <Card title='选集'>
-            <Tabs placement='top' value={tab} onChange={(v) => {setTab(v as number)}} style={{maxHeight:400}}>
+            <Tabs placement='top' value={tab} onChange={(v) => {setTab(v as number)}}>
                 {
                     splitArray(props.options, tabSize).map((group, i) => {
                         return (
