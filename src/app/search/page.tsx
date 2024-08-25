@@ -25,8 +25,9 @@ export interface VideoItem {
 
 function Search() {
     const params = useSearchParams();
+    const api = parseInt(params.get('api') as string)||1;
     const text = params.get('text')??'';
-    const page = parseInt(params.get('page') as string);
+    const page = parseInt(params.get('page') as string)||1;
 
     // 修改页
     const changePage = (v:number) => {
@@ -40,31 +41,31 @@ function Search() {
     const [pageSize, setPageSize] = useState(20);
     const [total, setTotal] = useState(0);
 
-    const fetchVideos = async (host:string, text:string, page:number=1) => {
-        setLoading(true);
-        const url = new URL(host);
-        url.searchParams.set('ac', 'detail');
-        url.searchParams.set('wd', text);
-        url.searchParams.set('pg', `${page || 1}`);
-        const data = await Request.GET(url.toString());
-        setPageSize(data.limit);
-        setTotal(data.total);
-        const videos:VideoItem[] = [];
-        for (const video of data.list) {
-            videos.push({
-                id: video.vod_id,
-                name: video.vod_name,
-                image: video.vod_pic,
-                types: video.vod_class,
-                remarks: video.vod_remarks,
-            })
+    useEffect(() => {
+        const fetchVideos = async (api:string, text:string, page:number=1) => {
+            setLoading(true);
+            const url = new URL(api);
+            url.searchParams.set('ac', 'detail');
+            url.searchParams.set('wd', text);
+            url.searchParams.set('pg', `${page || 1}`);
+            const data = await Request.GET(url.toString());
+            setPageSize(data.limit);
+            setTotal(data.total);
+            const videos:VideoItem[] = [];
+            for (const video of data.list) {
+                videos.push({
+                    id: video.vod_id,
+                    name: video.vod_name,
+                    image: video.vod_pic,
+                    types: video.vod_class,
+                    remarks: video.vod_remarks,
+                })
+            }
+            setVideos(videos);
+            setLoading(false);
         }
-        setVideos(videos);
-        setLoading(false);
-    }
-
-
-    useEffect(() => {fetchVideos(CONFIG.HOST, text, page)}, [text, page]);
+        fetchVideos(CONFIG.API[api-1], text, page)
+    }, [text, page, api]);
 
 
     return (
@@ -80,14 +81,14 @@ function Search() {
                 direction="vertical"
                 style={{width:'100%'}}
             >
-                <Navigation onSearch={(text) => {window.location.assign(`/search?text=${text}&page=1`);}}/>
+                <Navigation onSearch={(text) => {window.location.assign(`/search?api=${api}&text=${text}&page=1`);}}/>
 
                 <Row gutter={[16, 16]}>
                     {
                         videos.map((video, index) => {
                             return (
                                 <Col key={index} xl={{span: 2}} lg={{span: 3}} md={{span:4}} sm={{span:6}} xs={{span:12}}>
-                                    <VideoLink url={`/video?id=${video.id}`} title={video.name} remarks={video.remarks} image={video.image} />
+                                    <VideoLink url={`/video?api=${api}&id=${video.id}`} title={video.name} remarks={video.remarks} image={video.image} />
                                 </Col>
                             );
                         })

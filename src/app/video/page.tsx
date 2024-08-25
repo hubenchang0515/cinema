@@ -14,18 +14,15 @@ import Navigation from '@/components/Navigation';
 function Video() {
     // 获取参数
     const params = useSearchParams();
+    const api = parseInt(params.get('api') as string)||1;
     const id = parseInt(params.get('id') as string);
-    const episode = parseInt(params.get('episode') as string);
+    const episode = parseInt(params.get('episode') as string)||1;
 
     // 切换当前集
     const changeEpisode = (v:number) => {
         const _params = new URLSearchParams(params.toString())
         _params.set('episode', `${v}`);
         window.history.pushState(null, '', `?${_params.toString()}`);
-    }
-
-    if (!episode) {
-        changeEpisode(episode||1);
     }
 
     const [m3u8, setM3u8] = useState('');
@@ -40,8 +37,8 @@ function Video() {
 
     // 启动时请求数据
     useEffect(() => {
-        const fetchData = async (host:string, id:number) => {
-            const url = new URL(host);
+        const fetchData = async (api:string, id:number) => {
+            const url = new URL(api);
             url.searchParams.set('ac', 'detail');
             url.searchParams.set('ids', `${id}`);
     
@@ -68,8 +65,8 @@ function Video() {
             setEpisodes(episodes);
         };
 
-        fetchData(CONFIG.HOST, id)
-    },[id]);
+        fetchData(CONFIG.API[api-1], id)
+    },[api, id]);
 
     // 当前集发生切换
     useEffect(() => {
@@ -99,7 +96,7 @@ function Video() {
     return (
         <Fragment>
             <div style={{width:'100%', minHeight: '95vh', display:'flex', flexDirection: 'column', gap:16}}>
-                <Navigation onSearch={(text) => {window.location.assign(`/search?text=${text}&page=1`);}}/>
+                <Navigation onSearch={(text) => {window.location.assign(`/search?api=${api}&text=${text}&page=1`);}}/>
                 <div style={{width:'100%', display:'flex', flexGrow:1, gap:16}}>
                     <div style={{ width: `calc(100% - ${briefWidth} - 16px)`, display:'flex', flexDirection:'column', gap:16}}>
                         <div style={{height:'calc(100vh - 300px)'}}>
