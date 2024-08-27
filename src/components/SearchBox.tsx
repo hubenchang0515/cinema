@@ -9,18 +9,23 @@ export interface SearchBoxProps {
 
 export default function SearchBox(props:SearchBoxProps) {
     const [text, setText] = useState('');
+    const onSearch = (text:string) => {
+        if (text) {
+            props.onSearch(text);
+        }
+    }
     return (
         <Input 
             placeholder='搜索' 
             borderless 
             onChange={(v) => {setText(v)}}
-            onEnter={(v) => {props.onSearch(v)}}
+            onEnter={() => {onSearch(text);}}
             suffix={
                 <Button 
                     shape="circle" 
                     variant='text' 
                     icon={<SearchIcon/>}
-                    onClick={() => {props.onSearch(text)}}
+                    onClick={() => {onSearch(text);}}
                 />
             }
         />
