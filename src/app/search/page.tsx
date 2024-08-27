@@ -63,6 +63,7 @@ function Search() {
             }
             setVideos(videos);
             setLoading(false);
+            scrollTo(0, 0);
         }
         fetchVideos(CONFIG.API[api-1], text, page)
     }, [text, page, api]);

@@ -107,6 +107,7 @@ function Home() {
             }
             setVideos(videos);
             setLoading(false);
+            scrollTo(0, 0);
         }
         fetchVideos(CONFIG.API[api - 1], type as number, page).catch(() => {tryNextApi()});
     }, [api, type, page, tryNextApi]);
