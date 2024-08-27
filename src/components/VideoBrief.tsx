@@ -18,11 +18,13 @@ export default function VideoBrief(props:VideoBriefProps) {
             cover={<Image lazy src={props.image} style={{height:'50vh'}} fit='cover' key={props.image} loading={<Loading loading/>} fallback='/404.webp' alt='cover'/>}
             footer={
                 <Paragraph>
-                    <Text strong>简介</Text>
-                    <Paragraph ellipsis={{row: 10, expandable:true, collapsible:true}}>
-                        <Text copyable>{props.brief}</Text>
-                        <Paragraph> <Text strong>演员</Text> </Paragraph>
-                        <Paragraph> <Text copyable theme='secondary'>{props.actor}</Text> </Paragraph>
+                    <Paragraph>
+                        <Text strong>简介</Text>
+                        <Text ellipsis={{expandable:true, collapsible:true}}>{props.brief}</Text>
+                    </Paragraph>
+                    <Paragraph>
+                        <Text strong>演员</Text>
+                        <Text theme='secondary' ellipsis={{expandable:true, collapsible:true}}>{props.actor}</Text>
                     </Paragraph>
                 </Paragraph>
             }
