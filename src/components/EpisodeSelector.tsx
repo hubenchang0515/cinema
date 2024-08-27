@@ -37,7 +37,7 @@ export default function Episodes(props:EpisodeSelectorProps) {
                                 {
                                     group.map((option, j) => {
                                         return (
-                                            <CheckTag key={j} checked={props.current === i*tabSize + j + 1} style={{width:'100%'}} onClick={() => {props.onChanged(i*tabSize + j + 1)}}>
+                                            <CheckTag key={j} checked={props.current === i*tabSize + j + 1} style={{width:'100%', userSelect:'none'}} onClick={() => {props.onChanged(i*tabSize + j + 1)}}>
                                                 {option.name}
                                             </CheckTag>
                                         )
