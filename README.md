@@ -1,5 +1,8 @@
 # CINEMA
 
+![预览](./images//preview1.png)
+![预览](./images//preview2.png)
+
 ## Build & Run
 
 ```bash
